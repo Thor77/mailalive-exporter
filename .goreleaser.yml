@@ -1,0 +1,39 @@
+before:
+  hooks:
+  - go mod tidy
+builds:
+- env:
+  - CGO_ENABLED=0
+  goos:
+  - linux
+  goarch:
+  - amd64
+  - "386"
+archives:
+- replacements:
+    386: i386
+    amd64: x86_64
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+nfpms:
+  - id: deb
+    package_name: mailalive-exporter
+    homepage: https://github.com/Thor77/mailalive-exporter
+    maintainer: Thor77 <thor77 at thor77 dot org>
+    description: Exporter for mail delivery end-to-end monitoring
+    license: MIT
+    formats:
+      - deb
+    bindir: /usr/bin
+dockers:
+  - image_templates:
+      - ghcr.io/thor77/mailalive-exporter:latest
+      - ghcr.io/thor77/mailalive-exporter:{{ .Tag }}
