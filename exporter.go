@@ -190,7 +190,7 @@ func main() {
 		for {
 			log.Println("expiring cache")
 			cache.DeleteAll()
-			time.Sleep(5 * time.Minute)
+			time.Sleep(config.CacheTTL)
 		}
 	}()
 
@@ -205,7 +205,7 @@ func main() {
 				log.Printf("error sending mailgun request: %v\n", err)
 				mailgunErrorMetric.Inc()
 			}
-			time.Sleep(1 * time.Hour)
+			time.Sleep(config.MessageInterval)
 		}
 	}()
 

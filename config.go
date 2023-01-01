@@ -1,6 +1,10 @@
 package main
 
-import "github.com/BurntSushi/toml"
+import (
+	"time"
+
+	"github.com/BurntSushi/toml"
+)
 
 type MailgunConfig struct {
 	APIKey string
@@ -15,9 +19,11 @@ type IMAPConfig struct {
 }
 
 type Config struct {
-	Mailgun MailgunConfig
-	IMAP    IMAPConfig
-	Addr    string
+	Mailgun         MailgunConfig
+	IMAP            IMAPConfig
+	Addr            string
+	CacheTTL        time.Duration
+	MessageInterval time.Duration
 }
 
 func ParseConfig(path string) (Config, error) {
@@ -26,6 +32,14 @@ func ParseConfig(path string) (Config, error) {
 
 	if c.Addr == "" {
 		c.Addr = ":8080"
+	}
+
+	if c.CacheTTL == 0 {
+		c.CacheTTL = time.Duration(5 * time.Minute)
+	}
+
+	if c.MessageInterval == 0 {
+		c.MessageInterval = time.Duration(1 * time.Hour)
 	}
 
 	return c, err
